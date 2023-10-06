@@ -1,107 +1,93 @@
-"use client"
+"use client";
 
-import React, {useState} from 'react'
-import { SearchManufacturer } from './'
-import  Image  from 'next/image';
-import { useRouter } from 'next/navigation';
+import Image from "next/image";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const SearchButton = ({ otherClasses } : {otherClasses: string}) => (
+import SearchManufacturer from "./SearchManufacturer";
+
+const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
   <button type='submit' className={`-ml-3 z-10 ${otherClasses}`}>
-    <Image 
-      src="/magnifying-glass.svg"
-      alt="magnifying glass"
+    <Image
+      src={"/magnifying-glass.svg"}
+      alt={"magnifying glass"}
       width={40}
       height={40}
-      className="object-contain"
+      className='object-contain'
     />
   </button>
-)
+);
 
 const SearchBar = () => {
-    const [manufacturer, setManufacturer] = useState("");
-    const [model, setModel] = useState("");
-    const router = useRouter();
+  const [manufacturer, setManuFacturer] = useState("");
+  const [model, setModel] = useState("");
 
-    /**
- * Handles the search functionality of a form.
- * 
- * @param e - The event object for the form submission.
- */
-const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();  // Prevents the form from being submitted in the default manner.
+  const router = useRouter();
 
-  // Checks if both the manufacturer and model inputs are empty.
-  if(manufacturer === "" && model === "") {
-      return alert("please fill in the search bar");  // Alerts the user to fill in the search bar.
-  }
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  // Converts both inputs to lowercase and updates the search parameters accordingly.
-  updateSearchParams(model.toLocaleLowerCase(), manufacturer.toLocaleLowerCase());
-}
+    if (manufacturer.trim() === "" && model.trim() === "") {
+      return alert("Please provide some input");
+    }
 
-/**
-* Updates the search parameters of the current URL based on the provided model and manufacturer.
-* 
-* @param model - The model value to be set in the search parameters.
-* @param manufacturer - The manufacturer value to be set in the search parameters.
-*/
-const updateSearchParams = (model: string, manufacturer: string) => {
-  const searchParams = new URLSearchParams(window.location.search);  // Fetches the current search parameters.
+    updateSearchParams(model.toLowerCase(), manufacturer.toLowerCase());
+  };
 
-  // Checks if the model is provided and sets/deletes it in the search parameters accordingly.
-  if(model){
+  const updateSearchParams = (model: string, manufacturer: string) => {
+    // Create a new URLSearchParams object using the current URL search parameters
+    const searchParams = new URLSearchParams(window.location.search);
+
+    // Update or delete the 'model' search parameter based on the 'model' value
+    if (model) {
       searchParams.set("model", model);
-  }else {
+    } else {
       searchParams.delete("model");
-  }
+    }
 
-  // Checks if the manufacturer is provided and sets/deletes it in the search parameters accordingly.
-  if(manufacturer){
+    // Update or delete the 'manufacturer' search parameter based on the 'manufacturer' value
+    if (manufacturer) {
       searchParams.set("manufacturer", manufacturer);
-  }else {
-      searchParams.delete("manufacturer");
-  }
+    } else {
+       searchParams.delete("manufacturer");
+    }
 
-  // Constructs the new URL with the updated search parameters.
-  const newPathname = `${window.location.pathname}?${searchParams.toString()}`
+    // Generate the new pathname with the updated search parameters
+    const newPathname = `${window.location.pathname}?${searchParams.toString()}`;
 
-  // Navigates to the new URL.
-  router.push(newPathname);
-}
-
+    router.push(newPathname);
+  };
 
   return (
     <form className='searchbar' onSubmit={handleSearch}>
-        <div className="searchbar__item">
-            <SearchManufacturer 
-            manufacturer={manufacturer}
-            setManufacturer={setManufacturer} 
-          />
-
-          <SearchButton otherClasses="sm:hidden"/>
-        </div>
-
-        <div className="searchbar__item">
-          <Image
-            src="/model-icon.png"
-            width={25}
-            height={25}
-            className='absolute w-[20px] h-[20px] ml-4'
-            alt='car model'
-          />
-          <input 
-            type="text"
-            name='model'
-            value={model}
-            onChange={(e)=> setModel(e.target.value)}
-            placeholder='Tiguan'
-            className='searchbar__input'
-            />
-            <SearchButton otherClasses="sm:hidden"/>
-        </div>
-            <SearchButton otherClasses="max-sm:hidden"/>
+      <div className='searchbar__item'>
+        <SearchManufacturer
+          manufacturer={manufacturer}
+          setManufacturer={setManuFacturer}
+        />
+        <SearchButton otherClasses='sm:hidden' />
+      </div>
+      <div className='searchbar__item'>
+        <Image
+          src='/model-icon.png'
+          width={25}
+          height={25}
+          className='absolute w-[20px] h-[20px] ml-4'
+          alt='car model'
+        />
+        <input
+          type='text'
+          name='model'
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+          placeholder='Tiguan...'
+          className='searchbar__input'
+        />
+        <SearchButton otherClasses='sm:hidden' />
+      </div>
+      <SearchButton otherClasses='max-sm:hidden' />
     </form>
-  )
-}
+  );
+};
 
-export default SearchBar
+export default SearchBar;
