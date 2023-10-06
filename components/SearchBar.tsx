@@ -22,38 +22,56 @@ const SearchBar = () => {
     const [model, setModel] = useState("");
     const router = useRouter();
 
-    const handelSearch = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+    /**
+ * Handles the search functionality of a form.
+ * 
+ * @param e - The event object for the form submission.
+ */
+const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();  // Prevents the form from being submitted in the default manner.
 
-      if(manufacturer === "" && model === "") {
-        return alert("please fill in the search bar")
-      }
+  // Checks if both the manufacturer and model inputs are empty.
+  if(manufacturer === "" && model === "") {
+      return alert("please fill in the search bar");  // Alerts the user to fill in the search bar.
+  }
 
-      updateSearchParams(model.toLocaleLowerCase(), manufacturer.toLocaleLowerCase())
-    }
+  // Converts both inputs to lowercase and updates the search parameters accordingly.
+  updateSearchParams(model.toLocaleLowerCase(), manufacturer.toLocaleLowerCase());
+}
 
-    const updateSearchParams = (model: string, manufacturer: string) => {
-      const searchParams = new URLSearchParams(window.location.search);
+/**
+* Updates the search parameters of the current URL based on the provided model and manufacturer.
+* 
+* @param model - The model value to be set in the search parameters.
+* @param manufacturer - The manufacturer value to be set in the search parameters.
+*/
+const updateSearchParams = (model: string, manufacturer: string) => {
+  const searchParams = new URLSearchParams(window.location.search);  // Fetches the current search parameters.
 
-      if(model){
-        searchParams.set("model", model)
-      }else {
-        searchParams.delete("model")
-      }
+  // Checks if the model is provided and sets/deletes it in the search parameters accordingly.
+  if(model){
+      searchParams.set("model", model);
+  }else {
+      searchParams.delete("model");
+  }
 
-      if(manufacturer){
-        searchParams.set("manufacturer", manufacturer)
-      }else {
-        searchParams.delete("manufacturer")
-      }
+  // Checks if the manufacturer is provided and sets/deletes it in the search parameters accordingly.
+  if(manufacturer){
+      searchParams.set("manufacturer", manufacturer);
+  }else {
+      searchParams.delete("manufacturer");
+  }
 
-      const newPathname = `${window.location.pathname}?${searchParams.toString()}`
+  // Constructs the new URL with the updated search parameters.
+  const newPathname = `${window.location.pathname}?${searchParams.toString()}`
 
-      router.push(newPathname)
-    }
+  // Navigates to the new URL.
+  router.push(newPathname);
+}
+
 
   return (
-    <form className='searchbar' onSubmit={handelSearch}>
+    <form className='searchbar' onSubmit={handleSearch}>
         <div className="searchbar__item">
             <SearchManufacturer 
             manufacturer={manufacturer}
